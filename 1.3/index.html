@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Graph Chart</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+</head>
+<body>
+
+	<canvas id="mychart" width="800" height="250"></canvas>
+
+	<script type="text/javascript">
+
+		chartIt();
+
+		async function chartIt(){
+			const data = await getData();
+			const ctx = document.getElementById('mychart').getContext('2d');
+		
+			const myChart = new Chart(ctx, {
+	    		type: 'line',
+			    data: {
+			        labels: data.xs,
+			        datasets: [{
+			            label: 'Combined Land-Surface Air and Sea-Surface Water Temperature in C°',
+			            data: data.ys,
+			            fill: false,
+			            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+			            borderColor: 'rgba(255, 99, 132, 1)',
+			            borderWidth: 1
+			        }]
+			    },
+			});
+		}
+		
+
+
+		async function getData(){
+			const xs = [];
+			const ys = [];
+
+			const response = await fetch('zonaltemperature.csv');
+			const data = await response.text();
+
+			const rows = data.split('\n').slice(1);
+
+			rows.forEach(row => {
+				const cols = row.split(',');
+				const year = cols[0];
+				const temp = cols[1];
+
+				xs.push(year);
+				ys.push(parseFloat(temp)+14);
+				// console.log(year, temp);
+			});
+			return { xs, ys }
+		}
+
+
+	</script>
+
+
+</body>
+</html>
