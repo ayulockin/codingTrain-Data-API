@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Fetch</title>
+</head>
+<body>
+
+	<img src="", id="img", width="480">
+
+	<script type="text/javascript">
+		console.log('about to fetch data');
+		fetch('my_figure.png').then(response =>{
+			console.log(response);
+			return response.blob();
+		}).then(response => {
+			console.log(response);
+			document.getElementById('img').src = URL.createObjectURL(response);
+		}).catch(error => {
+			console.log("error!");
+			console.log(error);
+		});
+	</script>
+
+</body>
+</html>
