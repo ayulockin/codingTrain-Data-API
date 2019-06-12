@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Fetch</title>
+</head>
+<body>
+	
+	<h1>Heartfelt Poem</h1>
+	<p id="poem"></p>
+
+	<script type="text/javascript">
+		console.log('about to fetch data');
+
+		getImage().then(response => {
+			console.log("Text Displayed!");
+		}).catch(error => {
+			console.log("error!");
+			console.log(error);
+		});
+
+		async function getImage(){
+			const response = await fetch('poem.txt');
+			console.log(response);
+			const txt = await response.text();
+			console.log(txt)
+			document.getElementById('poem').innerText = txt;
+		}
+		
+	</script>
+
+</body>
+</html>

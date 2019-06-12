@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Fetch</title>
+</head>
+<body>
+
+	<img src="", id="img", width="480">
+
+	<script type="text/javascript">
+		console.log('about to fetch data');
+
+		getImage().then(response => {
+			console.log("Image loaded!");
+		}).catch(error => {
+			console.log("error!");
+			console.log(error);
+		});
+
+		async function getImage(){
+			const response = await fetch('my_figure.png');
+			console.log(response);
+			const blob = await response.blob();
+			document.getElementById('img').src = URL.createObjectURL(blob);
+		}
+		
+	</script>
+
+</body>
+</html>
