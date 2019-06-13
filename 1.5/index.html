@@ -11,7 +11,7 @@
    	crossorigin=""></script>
 	<style type="text/css">
 		#mapid{
-			height: 450px;
+			height: 400px;
 		}
 	</style>
 
@@ -19,16 +19,23 @@
 <body>
 	<h1>Where is ISS?</h1>
 	<p>
-		Latitude: <span id="lat"></span><br>
-		Longitude: <span id="lon"></span>
+		Latitude: <span id="lat"> °</span><br>
+		Longitude: <span id="lon"> °</span><br>
+		<!-- Visibility: <span id="vis"></span> -->
 	</p>
 
 	<div id="mapid"></div>
 
 	<script type="text/javascript">
 
+		// Created map and added tiles
 		const mymap = L.map('mapid').setView([0, 0], 1);
+		const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">osm</a> contributors'
+		const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+		const tiles = L.tileLayer(tileURL, {attribution});
+		tiles.addTo(mymap);
 
+		// Setup custom marker icon
 		const issIcon = L.icon({
 		    iconUrl: 'iss.png',
 		    iconSize: [50, 32],
@@ -37,23 +44,24 @@
 
 		const marker = L.marker([0,0], {icon: issIcon}).addTo(mymap);
 
-		const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">osm</a> contributors'
-		const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-		const tiles = L.tileLayer(tileURL, {attribution});
-		tiles.addTo(mymap);
-		
+		const polyline = L.polyline([[0, 0]], {color: 'red'}).addTo(mymap);
 
-		const iss_url = 'https://api.wheretheiss.at/v1/satellites/25544'
+		const issAPI_URL = 'https://api.wheretheiss.at/v1/satellites/25544'
 		
+		// Function fetching data from the web API
 		async function getData(){
-			const response = await fetch(iss_url);
+			const response = await fetch(issAPI_URL);
 			const data = await response.json();
 			const {latitude, longitude, visibility} = data;
 			document.getElementById('lat').textContent = latitude;
 			document.getElementById('lon').textContent = longitude;
+			// document.getElementById('vis').textContent = visibility;
 
+			mymap.setView([latitude, longitude], mymap.getZoom());
 			marker.setLatLng([latitude, longitude]);
+			polyline.setLatLngs([[latitude, longitude]]);
 
+			// Just simple effect. 
 			if(visibility=="daylight"){
 				document.body.style.backgroundColor = "lightgray";	
 			}
