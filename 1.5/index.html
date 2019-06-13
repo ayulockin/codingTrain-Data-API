@@ -3,6 +3,18 @@
 <head>
 	<meta charset="utf-8">
 	<title>Where Is ISS?</title>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   	integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   	crossorigin=""/>
+   	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   	integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   	crossorigin=""></script>
+	<style type="text/css">
+		#mapid{
+			height: 450px;
+		}
+	</style>
+
 </head>
 <body>
 	<h1>Where is ISS?</h1>
@@ -11,7 +23,25 @@
 		Longitude: <span id="lon"></span>
 	</p>
 
+	<div id="mapid"></div>
+
 	<script type="text/javascript">
+
+		const mymap = L.map('mapid').setView([0, 0], 1);
+
+		const issIcon = L.icon({
+		    iconUrl: 'iss.png',
+		    iconSize: [50, 32],
+		    iconAnchor: [25, 16],
+		});
+
+		const marker = L.marker([0,0], {icon: issIcon}).addTo(mymap);
+
+		const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">osm</a> contributors'
+		const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+		const tiles = L.tileLayer(tileURL, {attribution});
+		tiles.addTo(mymap);
+		
 
 		const iss_url = 'https://api.wheretheiss.at/v1/satellites/25544'
 		
@@ -21,6 +51,9 @@
 			const {latitude, longitude, visibility} = data;
 			document.getElementById('lat').textContent = latitude;
 			document.getElementById('lon').textContent = longitude;
+
+			marker.setLatLng([latitude, longitude]);
+
 			if(visibility=="daylight"){
 				document.body.style.backgroundColor = "lightgray";	
 			}
